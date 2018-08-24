@@ -1,0 +1,98 @@
+<form>
+  <div class="row">
+    <div class="col">
+      <div class="form-group">
+        <input type="text" 
+               class="form-control" 
+               id="first_name" 
+               required
+               placeholder="First Name">
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <input type="text" 
+               class="form-control" 
+               id="last_name"
+               required
+               placeholder="Last Name">
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <input type="email" 
+           class="form-control" 
+           id="email" 
+           placeholder="Email">
+  </div>
+  <div class="form-group">
+    <input type="text" 
+           class="form-control" 
+           id="address_1"
+           required
+           placeholder="Street Address">
+  </div>
+  <div class="form-group">
+    <input type="text" 
+           class="form-control" 
+           id="address_2"
+           required
+           placeholder="Address Line 2">
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="form-group">
+        <input type="text" 
+               class="form-control" 
+               id="city"
+               required
+               placeholder="City">
+      </div>
+    </div>
+    <div class="col">
+        <select class="form-control">
+            <option value="" disabled selected>State</option>
+            {{states}}	
+          </select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="form-group">
+        <input type="text" 
+               class="form-control" 
+               id="zip"
+               required
+               placeholder="Zip">
+      </div>
+    </div>
+    <div class="col"></div>
+  </div>
+  <div class="form-group">
+    <select name="county" 
+            id="county" 
+            required
+            class="form-control">
+      <option selected disabled>County / Newspaper*</option>
+      {{counties}}
+    </select>
+  </div>
+  <div class="form-group">
+    <select name="issue" 
+            id="issue" 
+            required
+            class="form-control">
+      <option selected disabled>Issues</option>
+      {{issues}}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <textarea class="form-control" 
+              id="message" 
+              name="message" 
+              placeholder="Your Letter"
+              rows="5"></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
