@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 const Recaptcha = require('express-recaptcha').Recaptcha;
-const fs = require('fs');
+const utils = require('./utils');
 
 const recaptcha = new Recaptcha(
   process.env.RECAPTCHA_SITE_KEY, 
@@ -14,36 +14,39 @@ app.use(bodyParser.urlencoded());
 
 
 app.get('/', recaptcha.middleware.render, (req, res) => {
-  const HTMLBase   = fs.readFileSync('templates/base.html', 'utf8');
-  const HTMLForm   = fs.readFileSync('templates/form.html', 'utf8');
-  const HTMLStates = fs.readFileSync('templates/states.html', 'utf8');
-  const HTMLCounties = fs.readFileSync('templates/counties.html', 'utf8');
-  const issues = JSON.parse(fs.readFileSync('issues.json', 'utf8'));
-  const defaultPage = HTMLBase
-    .replace('{{content}}', HTMLForm)
-    .replace('{{states}}', HTMLStates)
-    .replace('{{counties}}', HTMLCounties)
-    .replace('{{issues}}', keysToOptions(issues))
-    .replace('{{captcha}}', res.recaptcha);
-  res.send(defaultPage);
+  res.send(utils.getFormMarkup(res.recaptcha));
 });
 
-app.post('/', recaptcha.middleware.verify, function(req, res){
+app.post(
+  '/', 
+  recaptcha.middleware.verify, 
+  recaptcha.middleware.render, 
+  function(req, res){
+
   if (!req.recaptcha.error) {
-    console.log(req)
-  } else {
-    console.log(req.recaptcha)
+    console.error(req)
   }
+  let message = '';
+  utils.sendEmail(
+    req.body.email || 'govierp@gmail.com',
+    [req.body.email, 'govierp@gmail.com'],
+    `A message from ${req.body.first_name} ${req.body.last_name} on ${req.body.issue}`,
+    req.body.message + '\n' + utils.objectToString(req.body)
+  ).then(() => {
+    res.send(utils.getFormMarkup(res.recaptcha).replace('<!-- notification -->',
+      `<div class="alert alert-success" role="alert">
+        <h2>Message Sent</h2>
+      </div>`
+    ));
+  }).catch(error => {
+    res.send(utils.getFormMarkup(res.recaptcha).replace('<!-- notification -->',
+      `<div class="alert alert-danger" role="alert">
+        <h2>Sorry, unable to send. Please Try again later.</h2>
+      </div>`
+    ));
+  });
 });
 
 app.listen(process.env.PORT || 3000, () => console.log('Example app listening on port 3000!'))
 
 
-function keysToOptions(obj) {
-  let str = '';
-  const keys = Object.keys(obj);
-  for(let i = 0; i < keys.length; i++) {
-    str += `<option value="${keys[i]}">${keys[i]}</option>`
-  }
-  return str;
-}

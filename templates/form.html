@@ -1,10 +1,12 @@
-<form>
+<form action="#" method="POST">
+  <!-- notification -->
   <div class="row">
     <div class="col">
       <div class="form-group">
         <input type="text" 
                class="form-control" 
                id="first_name" 
+               name="first_name" 
                required
                placeholder="First Name">
       </div>
@@ -14,6 +16,7 @@
         <input type="text" 
                class="form-control" 
                id="last_name"
+               name="last_name"
                required
                placeholder="Last Name">
       </div>
@@ -23,12 +26,14 @@
     <input type="email" 
            class="form-control" 
            id="email" 
+           name="email" 
            placeholder="Email">
   </div>
   <div class="form-group">
     <input type="text" 
            class="form-control" 
            id="address_1"
+           name="address_1"
            required
            placeholder="Street Address">
   </div>
@@ -36,7 +41,7 @@
     <input type="text" 
            class="form-control" 
            id="address_2"
-           required
+           name="address_2"
            placeholder="Address Line 2">
   </div>
   <div class="row">
@@ -45,12 +50,13 @@
         <input type="text" 
                class="form-control" 
                id="city"
+               name="city"
                required
                placeholder="City">
       </div>
     </div>
     <div class="col">
-        <select class="form-control">
+        <select name="state" class="form-control">
             <option value="" disabled selected>State</option>
             {{states}}	
           </select>
@@ -61,6 +67,7 @@
       <div class="form-group">
         <input type="text" 
                class="form-control" 
+               name="zip"
                id="zip"
                required
                placeholder="Zip">
@@ -81,8 +88,9 @@
     <select name="issue" 
             id="issue" 
             required
-            class="form-control">
-      <option selected disabled>Issues</option>
+            class="form-control"
+            onchange="getIssue(this.value)">
+      <option selected disabled>Issue</option>
       {{issues}}
     </select>
   </div>
@@ -94,6 +102,16 @@
               placeholder="Your Letter"
               rows="5"></textarea>
   </div>
-  {{captcha}}
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <div class="form-group">
+    {{captcha}}
+  </div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
 </form>
+<script>
+function getIssue(val){
+  var issues = {{issueJSON}};
+  document.getElementById('message').value = issues[val];
+}
+</script>
